@@ -1,0 +1,17 @@
+name: nadi-calc
+
+services:
+  nadi-calc:
+    build: .
+    image: nadi-calc:latest
+    container_name: nadi-calc
+    restart: unless-stopped
+    ports:
+      - "8080:3000"
+    volumes:
+      - nadi-data:/data
+    environment:
+      TZ: Asia/Seoul
+
+volumes:
+  nadi-data:

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>나디 성과계산</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Apple SD Gothic Neo", sans-serif;
+    background: #f8fafc;
+    color: #0f172a;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .wrap { max-width: 560px; width: 100%; }
+  h1 { font-size: 28px; margin-bottom: 8px; letter-spacing: -0.5px; }
+  p.sub { color: #475569; margin-bottom: 28px; font-size: 14px; }
+  .grid { display: grid; gap: 12px; }
+  a.card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 20px 24px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+  a.card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(15,23,42,0.08);
+  }
+  .title { font-weight: 600; font-size: 16px; margin-bottom: 4px; }
+  .desc { color: #94a3b8; font-size: 13px; }
+  .arrow { color: #94a3b8; font-size: 20px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>나디 성과계산</h1>
+  <p class="sub">프로젝트 손익·투입 관리 도구</p>
+  <div class="grid">
+    <a class="card" href="프로젝트_손익계산기.html">
+      <div>
+        <div class="title">프로젝트 손익계산기</div>
+        <div class="desc">단일 프로젝트 손익 시뮬레이션</div>
+      </div>
+      <span class="arrow">→</span>
+    </a>
+    <a class="card" href="프로젝트_투입트래커.html">
+      <div>
+        <div class="title">프로젝트 투입 트래커</div>
+        <div class="desc">투입 공수와 진행 상황 추적</div>
+      </div>
+      <span class="arrow">→</span>
+    </a>
+    <a class="card" href="나디_손익계산_규칙집.md">
+      <div>
+        <div class="title">손익계산 규칙집</div>
+        <div class="desc">계산 규칙 문서</div>
+      </div>
+      <span class="arrow">→</span>
+    </a>
+  </div>
+</div>
+</body>
+</html>
