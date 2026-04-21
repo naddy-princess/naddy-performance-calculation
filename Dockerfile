@@ -11,11 +11,7 @@ ENV TZ=Asia/Seoul \
 WORKDIR /app
 
 COPY --from=deps /app/server/node_modules ./server/node_modules
-COPY server ./server
-COPY index.html ./
-COPY 프로젝트_손익계산기.html ./
-COPY 프로젝트_투입트래커.html ./
-COPY 나디_손익계산_규칙집.md ./
+COPY . .
 
 RUN mkdir -p /data
 VOLUME ["/data"]

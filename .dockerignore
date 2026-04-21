@@ -1,0 +1,10 @@
+.DS_Store
+.git
+.gitignore
+.omc
+Dockerfile
+docker-compose.yml
+.dockerignore
+README.md
+server/node_modules
+nginx.conf
