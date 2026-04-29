@@ -2285,11 +2285,11 @@ function renderAchievement() {
       <div class="ah-stars">${starStr}</div>
     </div>`;
 }
-// 초기 로그인 체크
-if (!currentUser()) {
-  openLoginModal();
-}
-bootstrapState().then(renderAll);
+// 초기화: 서버에서 사용자 목록을 먼저 받아온 뒤 로그인 모달 표시
+bootstrapState().then(() => {
+  renderAll();
+  if (!currentUser()) openLoginModal();
+});
 </script>
 </body>
 </html>
