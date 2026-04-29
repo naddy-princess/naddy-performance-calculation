@@ -757,7 +757,7 @@
     <div id="login-error" style="color:var(--red); font-size:12px; margin-top:8px; display:none;">생일이 맞지 않아요.</div>
 
     <div class="modal-actions">
-      <button class="btn-secondary" onclick="openUserManage()">+ 사용자 관리</button>
+      <button class="btn-secondary" onclick="openNewUserModal()">+ 새 사용자</button>
       <button class="btn-primary" onclick="doLogin()">확인</button>
     </div>
   </div>
@@ -790,6 +790,38 @@
 
     <div class="modal-actions">
       <button class="btn-secondary" onclick="closeUserManage()">닫기</button>
+    </div>
+  </div>
+</div>
+
+<!-- New User (simple add) Modal -->
+<div class="modal-backdrop hidden" id="newUserModal">
+  <div class="modal">
+    <h3>+ 새 사용자 등록</h3>
+    <p class="sub">이름과 생일 4자리(월월일일)를 입력하세요. 캐릭터는 등록 후 변경할 수 있어요.</p>
+
+    <label>이름</label>
+    <input type="text" id="nnu-name" placeholder="이름 (예: 김나디)" style="margin-bottom:8px;">
+
+    <label>역할</label>
+    <select id="nnu-role">
+      <option value="ceo">대표</option>
+      <option value="d1">디자이너1</option>
+      <option value="d2">디자이너2</option>
+    </select>
+
+    <label style="margin-top:10px;">생일 PIN (월월일일 4자리)</label>
+    <input type="text" id="nnu-pin" inputmode="numeric" maxlength="4" placeholder="예: 0315">
+
+    <label style="margin-top:10px;">캐릭터 <span id="nnu-char-preview" style="font-size:22px; margin-left:6px; vertical-align:middle;">🙂</span></label>
+    <div class="char-tabs" id="nnu-char-tabs"></div>
+    <div id="nnu-char-picker" class="char-picker"></div>
+
+    <div id="nnu-error" style="color:var(--red); font-size:12px; margin-top:8px; display:none;"></div>
+
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeNewUserModal()">취소</button>
+      <button class="btn-primary" onclick="submitNewUser()">+ 추가</button>
     </div>
   </div>
 </div>
@@ -859,7 +891,7 @@ const CONFIG = {
   },
   multipliers: { green: 2.0, yellow: 1.3, red: 1.0 },
   hoursPerDay: 8,
-  ceoExtraPin: "1004",
+  ceoExtraPin: "1129",
 };
 
 let state = defaultState();
@@ -1967,6 +1999,56 @@ function addUser() {
   document.getElementById("nu-pin").value = "";
   nuSelectedChar = null;
   openUserManage();
+}
+
+let nnuSelectedChar = null;
+let nnuActiveTab = "동물";
+function renderNnuCharPicker() {
+  const grid = document.getElementById("nnu-char-picker");
+  const tabs = document.getElementById("nnu-char-tabs");
+  if (!grid || !tabs) return;
+  if (!nnuSelectedChar) nnuSelectedChar = randomChar();
+  document.getElementById("nnu-char-preview").textContent = nnuSelectedChar;
+  tabs.innerHTML = Object.keys(CHARACTER_GROUPS).map(g =>
+    `<button type="button" class="char-tab ${g === nnuActiveTab ? 'active' : ''}" onclick="setNnuTab('${g}')">${g}</button>`
+  ).join("");
+  grid.innerHTML = CHARACTER_GROUPS[nnuActiveTab].map(c =>
+    `<button type="button" class="${c === nnuSelectedChar ? 'selected' : ''}" onclick="pickNnuChar('${c}')">${c}</button>`
+  ).join("");
+}
+function setNnuTab(g) { nnuActiveTab = g; renderNnuCharPicker(); }
+function pickNnuChar(c) { nnuSelectedChar = c; renderNnuCharPicker(); }
+
+function openNewUserModal() {
+  document.getElementById("nnu-name").value = "";
+  document.getElementById("nnu-pin").value = "";
+  document.getElementById("nnu-role").value = "d1";
+  document.getElementById("nnu-error").style.display = "none";
+  nnuSelectedChar = randomChar();
+  document.getElementById("loginModal").classList.add("hidden");
+  document.getElementById("newUserModal").classList.remove("hidden");
+  renderNnuCharPicker();
+}
+function closeNewUserModal() {
+  document.getElementById("newUserModal").classList.add("hidden");
+  openLoginModal();
+}
+function submitNewUser() {
+  const name = document.getElementById("nnu-name").value.trim();
+  const role = document.getElementById("nnu-role").value;
+  const pin = document.getElementById("nnu-pin").value.trim();
+  const errEl = document.getElementById("nnu-error");
+  if (!name) { errEl.textContent = "이름을 입력하세요."; errEl.style.display = "block"; return; }
+  if (!/^\d{4}$/.test(pin)) { errEl.textContent = "생일 4자리 숫자를 입력하세요."; errEl.style.display = "block"; return; }
+  const newId = "u_" + uid();
+  state.users.push({ id: newId, name, role, pin, character: nnuSelectedChar || randomChar() });
+  saveState();
+  nnuSelectedChar = null;
+  document.getElementById("newUserModal").classList.add("hidden");
+  openLoginModal();
+  const sel = document.getElementById("login-user");
+  if (sel) { sel.value = newId; updateLoginExtraVisibility(); }
+  renderAll();
 }
 
 let _charPickerUserId = null;
