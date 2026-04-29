@@ -39,6 +39,35 @@
   .title { font-weight: 600; font-size: 16px; margin-bottom: 4px; }
   .desc { color: #94a3b8; font-size: 13px; }
   .arrow { color: #94a3b8; font-size: 20px; }
+  .admin-only { display: none; }
+  body.is-admin .admin-only { display: flex; }
+  .badge {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #b45309;
+    background: #fef3c7;
+    border-radius: 999px;
+    vertical-align: middle;
+  }
+  .footer {
+    margin-top: 24px;
+    text-align: right;
+  }
+  .admin-btn {
+    background: none;
+    border: none;
+    color: #94a3b8;
+    font-size: 12px;
+    cursor: pointer;
+    padding: 6px 8px;
+    font-family: inherit;
+  }
+  .admin-btn:hover { color: #475569; }
+  body.is-admin .login-btn { display: none; }
+  body:not(.is-admin) .logout-btn { display: none; }
 </style>
 </head>
 <body>
@@ -46,13 +75,6 @@
   <h1>나디 성과계산</h1>
   <p class="sub">프로젝트 손익·투입 관리 도구</p>
   <div class="grid">
-    <a class="card" href="프로젝트_손익계산기.html">
-      <div>
-        <div class="title">프로젝트 손익계산기</div>
-        <div class="desc">단일 프로젝트 손익 시뮬레이션</div>
-      </div>
-      <span class="arrow">→</span>
-    </a>
     <a class="card" href="프로젝트_투입트래커.html">
       <div>
         <div class="title">프로젝트 투입 트래커</div>
@@ -60,14 +82,56 @@
       </div>
       <span class="arrow">→</span>
     </a>
-    <a class="card" href="나디_손익계산_규칙집.md">
+    <a class="card admin-only" href="프로젝트_손익계산기.html">
       <div>
-        <div class="title">손익계산 규칙집</div>
+        <div class="title">프로젝트 손익계산기<span class="badge">관리자</span></div>
+        <div class="desc">단일 프로젝트 손익 시뮬레이션</div>
+      </div>
+      <span class="arrow">→</span>
+    </a>
+    <a class="card admin-only" href="나디_손익계산_규칙집.md">
+      <div>
+        <div class="title">손익계산 규칙집<span class="badge">관리자</span></div>
         <div class="desc">계산 규칙 문서</div>
       </div>
       <span class="arrow">→</span>
     </a>
   </div>
+  <div class="footer">
+    <button type="button" class="admin-btn login-btn" id="loginBtn">관리자 로그인</button>
+    <button type="button" class="admin-btn logout-btn" id="logoutBtn">관리자 로그아웃</button>
+  </div>
 </div>
+<script>
+  async function refreshAdmin() {
+    try {
+      const r = await fetch("/api/admin/status", { credentials: "same-origin" });
+      const j = await r.json();
+      document.body.classList.toggle("is-admin", !!j.admin);
+    } catch (e) {
+      document.body.classList.remove("is-admin");
+    }
+  }
+  document.getElementById("loginBtn").addEventListener("click", async () => {
+    const pw = window.prompt("관리자 비밀번호를 입력하세요");
+    if (pw === null) return;
+    const r = await fetch("/api/admin/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify({ password: pw }),
+    });
+    if (r.ok) {
+      await refreshAdmin();
+    } else {
+      window.alert("비밀번호가 올바르지 않습니다.");
+    }
+  });
+  document.getElementById("logoutBtn").addEventListener("click", async () => {
+    await fetch("/api/admin/logout", { method: "POST", credentials: "same-origin" });
+    await refreshAdmin();
+  });
+  refreshAdmin();
+</script>
 </body>
 </html>
