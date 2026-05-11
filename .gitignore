@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+
+# Data / runtime
+.data/
+server/data/
+
+# OMC state
+.omc/
+server/.omc/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp

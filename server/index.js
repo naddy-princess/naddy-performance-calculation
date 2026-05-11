@@ -34,7 +34,7 @@ const putStmt = db.prepare(`
 const delStmt = db.prepare("DELETE FROM kv WHERE key = ?");
 
 const STATE_KEY = "tracker.state";
-const DEFAULT_STATE = { projects: [], entries: [], users: [] };
+const DEFAULT_STATE = { projects: [], entries: [], users: [], pendingEdits: [], dayMarks: [], cheers: [] };
 
 function getOrCreateAdminSecret() {
   const row = getStmt.get("admin.secret");
@@ -119,6 +119,9 @@ app.put("/api/state", (req, res) => {
     projects: Array.isArray(body.projects) ? body.projects : [],
     entries: Array.isArray(body.entries) ? body.entries : [],
     users: Array.isArray(body.users) ? body.users : [],
+    pendingEdits: Array.isArray(body.pendingEdits) ? body.pendingEdits : [],
+    dayMarks: Array.isArray(body.dayMarks) ? body.dayMarks : [],
+    cheers: Array.isArray(body.cheers) ? body.cheers : [],
   };
   putStmt.run(STATE_KEY, JSON.stringify(clean), new Date().toISOString());
   res.json({ ok: true });

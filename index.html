@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>나디 성과계산</title>
+<title>나디 그로스로그</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -39,8 +39,8 @@
   .title { font-weight: 600; font-size: 16px; margin-bottom: 4px; }
   .desc { color: #94a3b8; font-size: 13px; }
   .arrow { color: #94a3b8; font-size: 20px; }
-  .admin-only { display: none; }
-  body.is-admin .admin-only { display: flex; }
+  a.card.admin-only { display: none; }
+  body.is-admin a.card.admin-only { display: flex; }
   .badge {
     display: inline-block;
     margin-left: 8px;
@@ -66,19 +66,24 @@
     font-family: inherit;
   }
   .admin-btn:hover { color: #475569; }
+  /* 관리자 로그인 버튼은 URL ?admin 쿼리가 있을 때만 노출 */
+  .login-btn { display: none; }
+  body.gate-open:not(.is-admin) .login-btn { display: inline-block; }
   body.is-admin .login-btn { display: none; }
-  body:not(.is-admin) .logout-btn { display: none; }
+  /* 관리자 쿠키가 살아있으면 ?admin 없어도 로그아웃 버튼은 항상 노출 */
+  .logout-btn { display: none; }
+  body.is-admin .logout-btn { display: inline-block; }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>나디 성과계산</h1>
-  <p class="sub">프로젝트 손익·투입 관리 도구</p>
+  <h1>나디 그로스로그</h1>
+  <p class="sub">매일의 작업이 만드는 우리의 성장</p>
   <div class="grid">
     <a class="card" href="프로젝트_투입트래커.html">
       <div>
-        <div class="title">프로젝트 투입 트래커</div>
-        <div class="desc">투입 공수와 진행 상황 추적</div>
+        <div class="title">워크로그</div>
+        <div class="desc">업무 시간과 진행 상황 기록</div>
       </div>
       <span class="arrow">→</span>
     </a>
@@ -103,6 +108,10 @@
   </div>
 </div>
 <script>
+  // URL ?admin 쿼리가 있을 때만 관리자 진입 UI 노출
+  if (new URLSearchParams(location.search).has("admin")) {
+    document.body.classList.add("gate-open");
+  }
   async function refreshAdmin() {
     try {
       const r = await fetch("/api/admin/status", { credentials: "same-origin" });
